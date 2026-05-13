@@ -36,7 +36,7 @@ Follow these instructions to deploy the system in a local development environmen
 2.  **Database Initialization:**
     * Open your database management interface (e.g., phpMyAdmin).
     * Create a new, empty database named `cho_consent_system`.
-    * Import the provided SQL dump files (located in `CHO/Databases/cho_consent_system.sql` or `AppointmentCHO/databases/setup_database.sql`) to generate the required tables and constraints.
+    * Import the provided SQL dump files (located in `CHO/cho_consent_system.sql`) to generate the required tables and constraints.
 3.  **Environment Configuration:**
     * Navigate to `CHO/config.php` and `AppointmentCHO/database.php`.
     * Verify the database credentials match your environment (Default: Host=`localhost`, User=`root`, Password=`[empty]`, DB Name=`cho_consent_system`).
