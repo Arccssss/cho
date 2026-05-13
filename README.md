@@ -19,7 +19,6 @@ The application is built on a reliable, traditional server-side rendering archit
 **Machine Learning & Client-Side Verification:**
 * **TensorFlow.js Core (`@tensorflow/tfjs@4.0.0`):** Enables running machine learning models directly in the user's web browser.
 * **TensorFlow COCO-SSD Model (`@tensorflow-models/coco-ssd@2.2.3`):** Pre-trained object detection model utilized to verify human presence (liveness check) during consent form creation.
-* **TensorFlow Body-Pix Model (`@tensorflow-models/body-pix@2.2.0`):** Included for potential segmentation and privacy-focused features.
 
 **Native Web APIs:**
 * **MediaDevices API:** Requests webcam permissions and streams live video feeds for patient verification.
