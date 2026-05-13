@@ -7,7 +7,7 @@ function isLoggedIn() { return isset($_SESSION['user_id']) && !empty($_SESSION['
 function isAdmin()    { return isset($_SESSION['role'])    && $_SESSION['role'] === 'admin'; }
 
 if (!isLoggedIn() || !isAdmin()) {
-    header('../CHO/admin_dashboard.php');
+    header('../../cho-apt/CHO/admin_dashboard.php');
     exit;
 }
 
@@ -294,7 +294,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; min-
             <p>Appointment Management</p>
         </div>
         <ul class="sidebar-nav">
-            <li><a href="../CHO/admin_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="../../cho-apt/CHO/admin_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a href="manage_appointments.php"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
             <li><a href="slot_management.php"><i class="fas fa-cogs"></i> Manage Slot Capacity</a></li>
             <li><a href="appointment_calendar.php" class="active"><i class="fas fa-calendar"></i> Slot Calendar</a></li>

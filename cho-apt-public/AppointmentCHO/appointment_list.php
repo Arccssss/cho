@@ -1,5 +1,5 @@
 <?php
-require_once '../CHO/config.php';
+require_once '../../cho-apt/CHO/config.php';
 
 // Check if user is logged in
 if (!isLoggedIn()) {

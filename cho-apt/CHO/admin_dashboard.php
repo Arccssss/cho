@@ -1758,7 +1758,7 @@ function getServiceIcon($serviceType) {
                         <i class="fas fa-file-medical"></i>
                         <span>Forms</span>
                     </a>
-                    <a href="../AppointmentCHO/manage_appointments.php" class="nav-link">
+                    <a href="../../cho-apt-public/AppointmentCHO/manage_appointments.php" class="nav-link">
                         <i class="fas fa-calendar-alt"></i>
                         <span>Appointments</span>
                     </a>
@@ -1791,7 +1791,7 @@ function getServiceIcon($serviceType) {
                                 <i class="fas fa-list"></i>
                                 <span>View All Forms</span>
                             </a>
-                            <a href="../AppointmentCHO/slot_management.php" class="dropdown-item">
+                            <a href="../../cho-apt-public/AppointmentCHO/slot_management.php" class="dropdown-item">
                                 <i class="fas fa-cogs"></i>
                                 <span>Manage Slot Capacity</span>
                             </a>

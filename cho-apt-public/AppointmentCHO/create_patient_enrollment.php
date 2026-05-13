@@ -1,5 +1,5 @@
 <?php
-require_once '../CHO/config.php';
+require_once '../../cho-apt/CHO/config.php';
 
 if (!isLoggedIn() || !isAdmin()) {
     redirect('index.php?role=admin');
@@ -143,7 +143,7 @@ $today_count = (int)($today_row['cnt'] ?? 0);
         <h2><i class="fas fa-file-medical me-2"></i>Patient Enrollment — Online Bookings</h2>
         <p>Auto-generated enrollment records from AppointmentCHO online bookings</p>
     </div>
-    <a href="../CHO/admin_dashboard.php" class="back-btn">
+    <a href="../../cho-apt/CHO/admin_dashboard.php" class="back-btn">
         <i class="fas fa-arrow-left"></i> Dashboard
     </a>
 </div>

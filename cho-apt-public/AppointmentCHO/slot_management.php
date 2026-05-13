@@ -1,5 +1,5 @@
 ﻿<?php
-require_once '../CHO/config.php';
+require_once '../../cho-apt/CHO/config.php';
 
 // Check if user is logged in and is admin
 if (!isLoggedIn() || !isAdmin()) {
@@ -366,7 +366,7 @@ if ($dental_result) {
 
     <!-- Header -->
     <div class="header-card">
-        <a href="../CHO/admin_dashboard.php" class="back-btn">
+        <a href="../../cho-apt/CHO/admin_dashboard.php" class="back-btn">
             <i class="fas fa-arrow-left"></i> Back
         </a>
         <h2><i class="fas fa-sliders-h me-2"></i>Slot Capacity Management</h2>
