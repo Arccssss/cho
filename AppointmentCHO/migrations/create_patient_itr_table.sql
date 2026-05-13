@@ -1,0 +1,35 @@
+-- Patient ITR (Individual Treatment Record) table
+-- Auto-populated when a client books an appointment via AppointmentCHO
+
+CREATE TABLE IF NOT EXISTS `patient_itr` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `appointment_id` int(11) DEFAULT NULL COMMENT 'Links back to the appointment',
+  `reference_number` varchar(20) DEFAULT NULL,
+  `philhealth_no` varchar(50) DEFAULT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) DEFAULT NULL,
+  `maiden_name` varchar(100) DEFAULT NULL,
+  `suffix` varchar(20) DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `sex` varchar(20) DEFAULT NULL,
+  `civil_status` varchar(50) DEFAULT NULL,
+  `barangay` varchar(100) DEFAULT NULL,
+  `contact_number` varchar(20) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `purpose_of_visit` varchar(500) DEFAULT NULL,
+  `visit_date` date DEFAULT NULL,
+  `time_period` enum('AM','PM') DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `itr_status` enum('pending','enrolled','cancelled') DEFAULT 'pending',
+  `source` varchar(50) DEFAULT 'online_booking' COMMENT 'How the ITR was created',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_appointment_id` (`appointment_id`),
+  KEY `idx_reference_number` (`reference_number`),
+  KEY `idx_visit_date` (`visit_date`),
+  KEY `idx_philhealth` (`philhealth_no`),
+  KEY `idx_name` (`last_name`, `first_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
