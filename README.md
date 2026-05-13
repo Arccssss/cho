@@ -19,7 +19,6 @@ The application is built on a reliable, traditional server-side rendering archit
 **Machine Learning & Client-Side Verification:**
 * **TensorFlow.js Core (`@tensorflow/tfjs@4.0.0`):** Enables running machine learning models directly in the user's web browser.
 * **TensorFlow COCO-SSD Model (`@tensorflow-models/coco-ssd@2.2.3`):** Pre-trained object detection model utilized to verify human presence (liveness check) during consent form creation.
-* **TensorFlow Body-Pix Model (`@tensorflow-models/body-pix@2.2.0`):** Included for potential segmentation and privacy-focused features.
 
 **Native Web APIs:**
 * **MediaDevices API:** Requests webcam permissions and streams live video feeds for patient verification.
@@ -37,7 +36,7 @@ Follow these instructions to deploy the system in a local development environmen
 2.  **Database Initialization:**
     * Open your database management interface (e.g., phpMyAdmin).
     * Create a new, empty database named `cho_consent_system`.
-    * Import the provided SQL dump files (located in `CHO/Databases/cho_consent_system.sql` or `AppointmentCHO/databases/setup_database.sql`) to generate the required tables and constraints.
+    * Import the provided SQL dump files (located in `CHO/cho_consent_system.sql`) to generate the required tables and constraints.
 3.  **Environment Configuration:**
     * Navigate to `CHO/config.php` and `AppointmentCHO/database.php`.
     * Verify the database credentials match your environment (Default: Host=`localhost`, User=`root`, Password=`[empty]`, DB Name=`cho_consent_system`).
