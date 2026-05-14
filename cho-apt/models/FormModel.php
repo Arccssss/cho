@@ -30,6 +30,7 @@ class FormModel {
         
         $success = $stmt->execute();
         $stmt->close();
+        
         return $success;
     }
 
@@ -60,6 +61,36 @@ class FormModel {
             $stmt->close();
             
             return $success;
+        }
+        
+        $stmt->close();
+        return false;
+    }
+
+    public function getConsentFormWithCreator($form_id) {
+        $stmt = $this->conn->prepare("SELECT cf.*, u.full_name as creator_name, u.email as creator_email FROM consent_forms cf JOIN users u ON cf.user_id = u.id WHERE cf.id = ?");
+        $stmt->bind_param("i", $form_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $data = null;
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+        }
+        
+        $stmt->close();
+        return $data;
+    }
+
+    // Create a new consent form and return the inserted ID
+    public function createConsentForm($user_id, $patient_name, $photo_path, $date_of_birth, $age, $sex, $service_type, $form_date, $signature_path) {
+        $stmt = $this->conn->prepare("INSERT INTO consent_forms (user_id, patient_name, patient_photo, date_of_birth, age, sex, service_type, form_date, signature_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssissss", $user_id, $patient_name, $photo_path, $date_of_birth, $age, $sex, $service_type, $form_date, $signature_path);
+        
+        if ($stmt->execute()) {
+            $insert_id = $stmt->insert_id;
+            $stmt->close();
+            return $insert_id;
         }
         
         $stmt->close();

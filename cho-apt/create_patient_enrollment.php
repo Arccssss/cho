@@ -1,5 +1,6 @@
 <?php
-require_once 'config.php';
+require_once 'config/database.php';
+require_once 'config/helpers.php';
 
 // Check if user is logged in
 if (!isLoggedIn()) {
@@ -165,7 +166,7 @@ if (!$view_mode && $_SERVER['REQUEST_METHOD'] === 'POST') {
             medication_treatment, performed_laboratory_test, laboratory_findings, created_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
         
-        $stmt->bind_param("isssssssssssssssssssssssssssssssssssssss",
+        $stmt->bind_param("issssssssssssssssssssssssssssssssssssss",
             $user_id, $last_name, $first_name, $middle_name, $suffix, $maiden_name, $mothers_name, $age, $sex,
             $birth_date, $contact_number, $residential_address, $civil_status, $spouse_name,
             $educational_attainment, $employment_status, $dswd_nhts, $four_ps_member,

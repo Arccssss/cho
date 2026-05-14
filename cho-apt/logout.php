@@ -1,5 +1,6 @@
 <?php
-require_once 'config.php';
+require_once 'config/helpers.php';
+require_once 'config/database.php';
 
 // Clear all session data
 $_SESSION = array();

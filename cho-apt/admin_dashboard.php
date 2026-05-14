@@ -15,7 +15,6 @@ $conn = getDBConnection();
 $dashboardModel = new DashboardModel($conn);
 $formModel = new FormModel($conn);
 
-
 // 3. FETCH THE DATA (This is what is missing!)
 $stats = $dashboardModel->getOverviewStats();
 $recent_forms = $dashboardModel->getRecentConsentForms();
@@ -151,7 +150,7 @@ function getServiceIcon($serviceType) {
                         <i class="fas fa-file-medical"></i>
                         <span>Forms</span>
                     </a>
-                    <a href="../cho-apt-public/manage_appointments.php" class="nav-link">
+                    <a href="manage_appointments_admin.php" class="nav-link">
                         <i class="fas fa-calendar-alt"></i>
                         <span>Appointments</span>
                     </a>

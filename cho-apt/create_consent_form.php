@@ -1,6 +1,7 @@
 <?php
 require_once 'config/helpers.php';
 require_once 'config/database.php';
+require_once 'models/FormModel.php';
 
 // Check if user is logged in
 if (!isLoggedIn()) {
@@ -59,11 +60,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($photo_saved) {
             $conn = getDBConnection();
-            $stmt = $conn->prepare("INSERT INTO consent_forms (user_id, patient_name, patient_photo, date_of_birth, age, sex, service_type, form_date, signature_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("isssissss", $_SESSION['user_id'], $patient_name, $photo_path, $date_of_birth, $age, $sex, $service_type, $form_date, $signature_path);
+            $formModel = new FormModel($conn);
+
+            // Create form via Model
+            $form_id = $formModel->createConsentForm(
+                $_SESSION['user_id'], 
+                $patient_name, 
+                $photo_path, 
+                $date_of_birth, 
+                $age, 
+                $sex, 
+                $service_type, 
+                $form_date, 
+                $signature_path
+            );
             
-            if ($stmt->execute()) {
-                $form_id = $stmt->insert_id;
+            if ($form_id) {
                 setFlashMessage('success', 'Consent form created successfully!');
                 redirect('view_form.php?id=' . $form_id);
             } else {
@@ -73,8 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     unlink($signature_path);
                 }
             }
-            
-            $stmt->close();
             $conn->close();
         } else {
             $error = 'Failed to save photo. Please try again.';
@@ -89,494 +99,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHO Patient Consent System</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/create_consent_form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.0.0"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('images/ngc.jpg') center center / cover no-repeat;
-            filter: blur(6px) brightness(0.9);
-            transform: scale(1.05);
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* Header */
-        .header {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex: 1;
-        }
-
-        .logo-box {
-            width: 90px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .header-title h2 {
-            font-size: 28px;
-            font-weight: 800;
-            color: #FF6B35;
-            margin: 0;
-            letter-spacing: 1px;
-        }
-
-        .header-title p {
-            font-size: 13px;
-            color: #F7931E;
-            margin: 5px 0 0 0;
-            letter-spacing: 0.5px;
-        }
-
-        .header-right {
-            text-align: right;
-            color: #333;
-        }
-
-        .header-right p {
-            font-size: 12px;
-            color: #888;
-            margin: 0;
-        }
-
-        .header-right strong {
-            font-size: 16px;
-            color: #FF6B35;
-            display: block;
-            margin-top: 5px;
-        }
-
-        /* Navigation */
-        .navbar {
-            background: white;
-            padding: 0;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-        }
-
-        .navbar-nav {
-            display: flex;
-            gap: 0;
-            padding: 0;
-            margin: 0;
-        }
-
-        .navbar-nav a {
-            flex: 1;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            border-right: 1px solid #f0f0f0;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .navbar-nav a:last-child {
-            border-right: none;
-        }
-
-        .navbar-nav a:hover {
-            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-            color: white;
-        }
-
-        /* Alert */
-        .alert {
-            background: white;
-            border-left: 5px solid #FF6B35;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .alert i {
-            color: #FF6B35;
-            margin-right: 10px;
-        }
-
-        /* Form Card */
-        .form-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: #FF6B35;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #FDB833;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
-            color: #F7931E;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: #f9f9f9;
-        }
-
-        .form-group select[multiple] {
-            min-height: 120px;
-            padding: 10px;
-        }
-
-        .form-group select[multiple] option {
-            padding: 8px;
-            margin-bottom: 5px;
-        }
-
-        /* Service Type Checkboxes */
-        .service-checkboxes {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
-            padding: 15px;
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            padding: 10px 12px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            user-select: none;
-        }
-
-        .checkbox-label:hover {
-            background: #efefef;
-        }
-
-        .checkbox-label input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #FF6B35;
-        }
-
-        .checkbox-label span {
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #FF6B35;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
-
-        /* Photo Section */
-        .photo-section {
-            background: #f9f9f9;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .camera-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto 20px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        #video, #canvas, #captured-photo {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 8px;
-        }
-
-        #video {
-            border: 3px solid #ddd;
-        }
-
-        #video.face-detected {
-            border-color: #10b981;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
-        }
-
-        #video.no-face {
-            border-color: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
-        }
-
-        #video.blurry-image {
-            border-color: #f59e0b;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
-        }
-
-        #captured-photo {
-            display: none;
-        }
-
-        /* Face Detection Status */
-        .detection-status {
-            text-align: center;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            display: none;
-        }
-
-        .detection-status.active {
-            display: block;
-        }
-
-        .detection-status.success {
-            background: #D1FAE5;
-            color: #065F46;
-            border: 2px solid #10b981;
-        }
-
-        .detection-status.warning {
-            background: #FEF3C7;
-            color: #78350F;
-            border: 2px solid #f59e0b;
-        }
-
-        .detection-status.error {
-            background: #FEE2E2;
-            color: #7F1D1D;
-            border: 2px solid #ef4444;
-        }
-
-        .detection-icon {
-            margin-right: 8px;
-        }
-
-        .camera-controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-camera {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
-        }
-
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
-        }
-
-        /* Signature Section */
-        #signatureCanvas {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            display: block;
-            margin: 0 auto 20px;
-            background: white;
-            cursor: crosshair;
-            width: 100%;
-            max-width: 500px;
-            height: 150px;
-        }
-
-        /* Submit Buttons */
-        .button-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        .btn {
-            padding: 14px 35px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .header-left {
-                flex-direction: column;
-            }
-
-            .navbar-nav a {
-                padding: 12px 15px;
-                font-size: 13px;
-            }
-
-            .form-card {
-                padding: 25px;
-            }
-
-            .section-title {
-                font-size: 18px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="header-left">
                 <div class="logo-box">
@@ -593,24 +123,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- Navigation -->
         <nav class="navbar">
             <div class="navbar-nav">
                 <a href="admin_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
             </div>
         </nav>
 
-        <!-- Alert Messages -->
         <?php if ($error): ?>
             <div class="alert">
                 <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
             </div>
         <?php endif; ?>
 
-        <!-- Form Card -->
         <div class="form-card">
             <form method="POST" action="" id="consentForm">
-                <!-- Basic Information Section -->
                 <h3 class="section-title"><i class="fas fa-info-circle"></i> Patient Information</h3>
 
                 <div class="form-group">
@@ -697,11 +223,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                            value="<?php echo date('Y-m-d'); ?>">
                 </div>
 
-                <!-- Photo Capture Section -->
                 <h3 class="section-title"><i class="fas fa-camera"></i> Patient Photo</h3>
                 <div class="photo-section">
 
-                    <!-- Mode Toggle Tabs -->
                     <div style="display: flex; gap: 0; margin-bottom: 15px; border-radius: 10px; overflow: hidden; border: 2px solid #FF6B35;">
                         <button type="button" id="tabCamera" onclick="switchPhotoMode('camera')"
                             style="flex: 1; padding: 10px; border: none; background: linear-gradient(135deg, #FF6B35, #F7931E); color: white; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.3s;">
@@ -713,7 +237,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </button>
                     </div>
 
-                    <!-- Camera Mode -->
                     <div id="cameraModeSection">
                         <div class="detection-status" id="detectionStatus">
                             <span class="detection-icon"><i class="fas fa-spinner fa-spin"></i></span>
@@ -737,7 +260,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
 
-                    <!-- Upload Mode -->
                     <div id="uploadModeSection" style="display: none;">
                         <div style="text-align: center; margin-bottom: 12px; font-size: 13px; color: #666;">
                             <i class="fas fa-info-circle"></i> Upload a clear front-facing photo (JPG, PNG, WEBP)
@@ -762,7 +284,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="photo_data" id="photo_data">
                 </div>
 
-                <!-- Signature Section -->
                 <h3 class="section-title"><i class="fas fa-pen"></i> Your Signature</h3>
                 <div class="photo-section">
                     <div style="margin-bottom: 20px;">
@@ -785,7 +306,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Submit Buttons -->
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
                         <i class="fas fa-save"></i> Create Consent Form
@@ -829,7 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Initialize on page load
-        window.addEventListener('load', initializeFaceDetection);
+        //window.addEventListener('load', initializeFaceDetection);
 
         // Detection status display
         function showDetectionStatus(type, message, icon = '') {
@@ -936,6 +456,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Start camera
         startCameraBtn.addEventListener('click', async () => {
             try {
+                // Change button text to show it's loading the AI
+                const originalText = startCameraBtn.innerHTML;
+                startCameraBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading AI Model...';
+                startCameraBtn.disabled = true;
+
+                // 1. Initialize the AI Model ONLY when the camera is requested
+                if (!cocoModel) {
+                    await initializeFaceDetection();
+                }
+
+                // 2. Start the camera stream
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { 
                         width: { ideal: 640 },
@@ -944,7 +475,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } 
                 });
                 video.srcObject = stream;
+                
+                // Update UI
                 startCameraBtn.style.display = 'none';
+                startCameraBtn.innerHTML = originalText; // Reset text for later
+                startCameraBtn.disabled = false;
                 captureBtn.style.display = 'inline-flex';
                 
                 detectionActive = true;
@@ -953,9 +488,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Start continuous face detection
                 if (faceDetectionInterval) clearInterval(faceDetectionInterval);
                 faceDetectionInterval = setInterval(detectFaceAndBlur, 500);
+
             } catch (err) {
-                alert('Error accessing camera: ' + err.message);
-                showDetectionStatus('error', '<i class="fas fa-camera"></i> Camera access denied. Please enable camera permissions.', '');
+                startCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Start Camera';
+                startCameraBtn.disabled = false;
+                alert('Error accessing camera or loading model: ' + err.message);
+                showDetectionStatus('error', '<i class="fas fa-camera"></i> Camera access denied or AI failed to load.', '');
             }
         });
         
