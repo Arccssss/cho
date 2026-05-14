@@ -25,7 +25,7 @@ function formatAppointmentTime($timeValue) {
 
 // Check if user is logged in and is admin
 if (!isLoggedIn() || !isAdmin()) {
-    redirect('../../cho-apt/CHO/admin_dashboard.php');
+    redirect('../cho-apt/admin_dashboard.php');
 }
 
 // Handle appointment status updates
@@ -725,12 +725,12 @@ $conn->close();
                 <p>Appointment Management</p>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="../../cho-apt/CHO/admin_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="../cho-apt/admin_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="manage_appointments.php" class="active"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
                 <li><a href="slot_management.php"><i class="fas fa-cogs"></i> Manage Slot Capacity</a></li>
                 <li><a href="appointment_calendar.php"><i class="fas fa-calendar"></i> Calendar</a></li>
-                <li><a href="../../cho-apt/CHO/all_forms.php"><i class="fas fa-file-medical"></i> Consent Forms</a></li>
-                <li><a href="../../cho-apt/CHO/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="../cho-apt/all_forms.php"><i class="fas fa-file-medical"></i> Consent Forms</a></li>
+                <li><a href="../cho-apt/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </aside>
 

@@ -20,12 +20,12 @@ session_start();
 
 // Check if user is logged in
 if (!isLoggedIn()) {
-    redirect('../../cho-apt/CHO/index.php?role=user');
+    redirect('../cho-apt/index.php?role=user');
 }
 
 // Only regular users can access this page
 if (isAdmin()) {
-    redirect('../../cho-apt/CHO/admin_dashboard.php');
+    redirect('../cho-apt/admin_dashboard.php');
 }
 
 $error = '';
@@ -689,23 +689,23 @@ function getAvailableTimeSlots($date) {
         <!-- Navigation -->
         <nav class="modern-navbar">
             <div class="navbar-left">
-                <a href="../../cho-apt/CHO/user_dashboard.php" class="nav-brand">
+                <a href="../cho-apt/user_dashboard.php" class="nav-brand">
                     <i class="fas fa-heartbeat"></i>
                     <span>Patient Portal</span>
                 </a>
             </div>
             <div class="navbar-center">
                 <ul class="navbar-nav">
-                    <li><a href="../../cho-apt/CHO/user_dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="../cho-apt/user_dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                     <li><a href="book_appointment.php" class="active"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
                     <li><a href="appointment_calendar.php"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
                     <li><a href="my_appointments.php"><i class="fas fa-list"></i> My Appointments</a></li>
-                    <li><a href="../../cho-apt/CHO/create_consent_form.php"><i class="fas fa-file-medical"></i> Consent Form</a></li>
-                    <li><a href="../../cho-apt/CHO/patient_medical_record.php"><i class="fas fa-notes-medical"></i> Medical Record</a></li>
+                    <li><a href="../cho-apt/create_consent_form.php"><i class="fas fa-file-medical"></i> Consent Form</a></li>
+                    <li><a href="../cho-apt/patient_medical_record.php"><i class="fas fa-notes-medical"></i> Medical Record</a></li>
                 </ul>
             </div>
             <div class="navbar-right">
-                <a href="../../cho-apt/CHO/logout.php" class="logout-btn">
+                <a href="../cho-apt/logout.php" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -895,7 +895,7 @@ function getAvailableTimeSlots($date) {
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-calendar-check"></i> Book Appointment
                         </button>
-                        <button type="button" onclick="window.location.href='../../cho-apt/CHO/user_dashboard.php'" class="btn btn-secondary">
+                        <button type="button" onclick="window.location.href='../cho-apt/user_dashboard.php'" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Back to Dashboard
                         </button>
                     </div>

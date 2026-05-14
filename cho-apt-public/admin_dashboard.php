@@ -194,7 +194,7 @@ $upcoming_holidays_result = $conn->query($upcoming_holidays_sql);
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3 quick-action">
-                                <a href="../AppointmentCHO/slot_management.php" class="btn btn-info btn-custom">
+                                <a href="slot_management.php" class="btn btn-info btn-custom">
                                     <i class="fas fa-cogs me-2"></i>Manage Slot Capacity
                                 </a>
                             </div>
@@ -221,7 +221,7 @@ $upcoming_holidays_result = $conn->query($upcoming_holidays_sql);
                                 </a>
                             </div>
                             <div class="col-md-6 quick-action">
-                                <a href="../AppointmentCHO/create_patient_enrollment.php" class="btn btn-success btn-custom">
+                                <a href="create_patient_enrollment.php" class="btn btn-success btn-custom">
                                     <i class="fas fa-file-medical me-2"></i>Patient ITR (Online Bookings)
                                 </a>
                             </div>

@@ -1,5 +1,5 @@
 ﻿<?php
-require_once '../../cho-apt/CHO/config.php';
+require_once '../cho-apt/config.php';
 
 // Check if user is logged in and is admin
 if (!isLoggedIn() || !isAdmin()) {
@@ -48,10 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['date_specific_update'])) {
         try {
             $selected_date = $conn->real_escape_string($_POST['selected_date']);
-            // Single daily capacity — store same value for both AM and PM
-            $daily_capacity = (int)$_POST['date_daily_capacity'];
-            $am_capacity = $daily_capacity/2;
-            $pm_capacity = $daily_capacity/2;
+            // Dual daily capacity — store different value for both AM and PM
+            $daily_capacity_morning = (int)$_POST['date_daily_capacity_morning'];
+            $daily_capacity_afternoon = (int)$_POST['date_daily_capacity_afternoon'];
+            $am_capacity = $daily_capacity_morning;
+            $pm_capacity = $daily_capacity_afternoon;
 
             // Create table if it doesn't exist
             $table_check = $conn->query("SHOW TABLES LIKE 'date_slot_overrides'");
@@ -81,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $insert_stmt->bind_param("sii", $selected_date, $am_capacity, $pm_capacity);
                 $insert_stmt->execute();
                 $insert_stmt->close();
+                $daily_capacity = $daily_capacity_morning + $daily_capacity_afternoon;
                 $success = "Daily capacity set for $selected_date — $daily_capacity slots";
             } else {
                 $update_sql = "UPDATE date_slot_overrides SET am_capacity = ?, pm_capacity = ?, updated_at = NOW() WHERE override_date = ?";
@@ -88,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $update_stmt->bind_param("iis", $am_capacity, $pm_capacity, $selected_date);
                 $update_stmt->execute();
                 $update_stmt->close();
+                $daily_capacity = $daily_capacity_morning + $daily_capacity_afternoon;
                 $success = "Daily capacity updated for $selected_date — $daily_capacity slots";
             }
         } catch (Exception $e) {
@@ -366,7 +369,7 @@ if ($dental_result) {
 
     <!-- Header -->
     <div class="header-card">
-        <a href="../../cho-apt/CHO/admin_dashboard.php" class="back-btn">
+        <a href="manage_appointments.php" class="back-btn">
             <i class="fas fa-arrow-left"></i> Back
         </a>
         <h2><i class="fas fa-sliders-h me-2"></i>Slot Capacity Management</h2>
@@ -456,9 +459,14 @@ if ($dental_result) {
                         <div class="col-sm-8">
                             <label class="form-label">
                                 <i class="fas fa-users me-1 text-primary"></i>
-                                Daily Capacity (Whole Day)
+                                Daily Capacity (Morning)
                             </label>
-                            <input type="number" name="date_daily_capacity" class="form-control capacity-number-input" min="0" max="500" value="100" required>
+                            <input type="number" name="date_daily_capacity_morning" class="form-control capacity-number-input" min="0" max="500" value="100" required>
+                            <label class="form-label">
+                                <i class="fas fa-users me-1 text-primary"></i>
+                                Daily Capacity (Afternoon)
+                            </label>
+                            <input type="number" name="date_daily_capacity_afternoon" class="form-control capacity-number-input" min="0" max="500" value="100" required>
                             <div class="form-text text-muted" style="font-size:0.75rem;">
                                 Total number of appointments allowed for this date (8:00 AM – 5:00 PM)
                             </div>
