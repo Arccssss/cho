@@ -1,4 +1,9 @@
+
+
 <?php
+// this file was originally in cho-apt but idk kng gna gmit sya kay ang admin dashboard nga appointment button sa manage_appointment sa public ga redirect.
+// di ko lg ni pag delete kay bsi gmiton
+
 require_once 'config.php';
 
 // Check if user is logged in
