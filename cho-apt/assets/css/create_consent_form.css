@@ -279,12 +279,15 @@ body::after {
 }
 
 .camera-container {
+    width: 240px !important;  /* Fixed portrait width */
+    height: 320px !important; /* Fixed portrait height */
+    margin: 0 auto 20px auto !important; /* The 'auto' magically centers the box */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Prevents the video from spilling out of the rounded corners */
+    border-radius: 12px;
     position: relative;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto 20px;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 #video, #canvas, #captured-photo {
@@ -295,9 +298,12 @@ body::after {
 }
 
 #video {
-    border: 3px solid #ddd;
+    width: 100%;
+    max-width: 300px; /* Adjust based on your preference */
+    aspect-ratio: 3/4;
+    object-fit: cover; /* This makes the preview act like a mirror */
+    border-radius: 8px;
 }
-
 #video.face-detected {
     border-color: #10b981;
     box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
@@ -311,6 +317,15 @@ body::after {
 #video.blurry-image {
     border-color: #f59e0b;
     box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+}
+
+#video, #captured-photo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 
 #captured-photo {

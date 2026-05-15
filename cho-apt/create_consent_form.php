@@ -507,7 +507,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 const predictions = await cocoModel.detect(video);
-                const faces = predictions.filter(pred => pred.class === 'person' && pred.score > 0.5);
+                const faces = predictions.filter(pred => pred.class === 'person' && pred.score > 0.4);
 
                 if (faces.length === 0) {
                     showDetectionStatus('error', '<i class="fas fa-face-dizzy"></i> No face detected. Cannot capture.', '');
