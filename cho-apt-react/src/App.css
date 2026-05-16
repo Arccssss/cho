@@ -1,0 +1,98 @@
+/* ========================================
+   SAMOTIAL HEALTH PORTAL - MAIN CSS
+   ======================================== */
+
+/* ========== GOOGLE FONTS IMPORTS ========== */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Numans&display=swap');
+
+/* ========== MODULAR CSS IMPORTS ========== */
+@import './styles/common.css';           /* Global styles, variables, buttons, forms */
+@import './styles/navigation.css';       /* Navigation and page nav */
+@import './styles/calendar.css';         /* Calendar and time slots */
+@import './home/HomePage.css';           /* Homepage specific styles */
+@import './schedule/ScheduleInfo.css';   /* Schedule specific styles */
+
+/* ========== ANIMATIONS ========== */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========== FOOTER ========== */
+footer {
+  background-color: #f9fafb;
+  border-top: 1px solid var(--tertiary);
+  padding: 3rem 1.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+footer p {
+  margin-bottom: 0;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-brand-title {
+  margin: 0;
+  margin-bottom: 0.25rem;
+}
+
+.footer-copyright {
+  margin: 0;
+}
+
+.footer-tagline {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+  justify-content: flex-end;
+  font-size: 0.75rem;
+}
+
+.footer-links a {
+  color: #6b7280;
+  text-decoration: none;
+  transition: all 150ms;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
+}
+
+.footer-links a:hover {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+}

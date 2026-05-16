@@ -1,0 +1,373 @@
+/* ========================================
+   CALENDAR COMPONENT STYLES
+   ======================================== */
+
+.calendar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.calendar-card {
+  background-color: #ffffff;
+  border: 1px solid var(--tertiary);
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+/* Calendar Header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--tertiary);
+}
+
+.current-month {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+  font-family: var(--font-heading);
+}
+
+.nav-button {
+  background-color: transparent;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.nav-button:hover {
+  background-color: var(--secondary);
+}
+
+/* Weekday Labels */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.weekday-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+  font-family: var(--font-body);
+}
+
+/* Calendar Days Grid */
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.calendar-day:not(.empty):hover:not(.disabled) {
+  border-color: transparent;
+  background-color: #f0f4ff;
+  transform: scale(1.05);
+}
+
+.calendar-day.empty {
+  background-color: transparent;
+  border: none;
+  cursor: default;
+}
+
+.calendar-day.disabled {
+  background-color: transparent;
+  color: #d1d5db;
+  cursor: not-allowed;
+  border-color: transparent;
+}
+
+.calendar-day.selected {
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: none;
+  border-radius: 0.5rem;
+}
+
+/* Calendar Legend */
+.calendar-legend {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--tertiary);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-family: var(--font-body);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: none;
+}
+
+.legend-dot.available {
+  background-color: #e3e2e6;
+  border-color: transparent;
+}
+
+.legend-dot.disabled {
+  background-color: #d1d5db;
+  border-color: transparent;
+}
+
+.legend-dot.selected {
+  background-color: var(--primary);
+  border-color: transparent;
+}
+
+/* Time Slots */
+.timeslots-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeslots-card {
+  background-color: #ffffff;
+  border: 1px solid var(--tertiary);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeslots-card.empty {
+  justify-content: center;
+  align-items: center;
+}
+
+/* Time Slots Header */
+.timeslots-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--tertiary);
+}
+
+.timeslots-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 0.5rem 0;
+  font-family: var(--font-heading);
+}
+
+.selected-date {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 600;
+  font-family: var(--font-body);
+}
+
+/* Time Slots Grid */
+.timeslots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .timeslots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .timeslots-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.timeslot-button {
+  padding: 1rem;
+  border: 2px solid var(--tertiary);
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-body);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.timeslot-button:hover:not(.unavailable):not(:disabled) {
+  border-color: var(--light-blue);
+  background-color: #f0f4ff;
+  transform: translateY(-2px);
+}
+
+.timeslot-button.selected {
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 6px -1px rgba(0, 32, 70, 0.2);
+}
+
+.timeslot-button.unavailable {
+  background-color: #f9fafb;
+  color: #d1d5db;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+}
+
+.timeslot-button .time {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.timeslot-button .unavailable-badge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ef4444;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #9ca3af;
+  font-family: var(--font-body);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Selection Summary */
+.selection-summary {
+  background-color: #f0f4ff;
+  border: 1px solid var(--light-blue);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-top: auto;
+}
+
+.selection-summary h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  letter-spacing: 0.5px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+}
+
+.summary-item:not(:last-child) {
+  border-bottom: 1px solid var(--tertiary);
+  margin-bottom: 0.75rem;
+}
+
+.summary-item .label {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.summary-item .value {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .calendar-card,
+  .timeslots-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-card,
+  .timeslots-card {
+    padding: 1.5rem;
+  }
+
+  .timeslots-grid {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-card,
+  .timeslots-card {
+    padding: 1.25rem;
+  }
+
+  .calendar-day {
+    font-size: 0.85rem;
+  }
+}
